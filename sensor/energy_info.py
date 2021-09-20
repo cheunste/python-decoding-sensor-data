@@ -10,8 +10,8 @@ class EnergyData (HouseInfo):
         # energy_usage field comes as a 3 digit hex number (12 bits), but only the middle hex number (bit 4-7) gives the energy usage value
         # use bitwise oeprations to extract it
         energy = int(rec, base=16)
-        energy &= self.ENERGY_BITS
-        energy >> 4
+        energy = energy & self.ENERGY_BITS
+        energy = energy >> 4
         return energy
 
     def _convert_data(self, data):
@@ -29,4 +29,5 @@ class EnergyData (HouseInfo):
         return self._convert_data(recs)
 
     def calculate_energy_usage(self, data):
-        total_energy = sum([x for x in data if x == "field"])
+        total_energy = sum([field * self.ENERGY_PER_BULB for field in data])
+        return total_energy
